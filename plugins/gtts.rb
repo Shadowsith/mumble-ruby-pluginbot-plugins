@@ -1,6 +1,7 @@
+# requires mplayer console program
 require "../helpers/google.rb"
 
-class GoogleSpeaker < Plugin
+class GoogleTTS < Plugin
 
     def init(init)
         super
@@ -21,7 +22,6 @@ class GoogleSpeaker < Plugin
 
     def handle_chat(msg, message) 
         super
-        #actor = msg.actor
         parts = message.split(" ")
         if parts[0] == "gsay"
             if parts[1] != "" || parts[1] != nil?
@@ -31,8 +31,19 @@ class GoogleSpeaker < Plugin
                 else
                     lang = "en"
                 end
-                google = GoogleTTS.new(message,lang)
-                google.load
+                google = GoogleTtsHelper.new(message,lang)
+                th1 = Thread.new {
+                    google.load
+                }
+                th1.join
+
+                @@bot[:mpd].add(google.getFileName)
+                if @@bot[:mpd].queue.length > 0
+                    lastsongid = @@bot[:mpd].queue.length.to_i - 1
+                    @@bot[:mpd].play (lastsongid)
+                    @@bot[:cli].me.deafen false if @@bot[:cli].me.deafened?
+                    @@bot[:cli].me.mute false if @@bot[:cli].me.muted?
+                end
             end
         end
     end

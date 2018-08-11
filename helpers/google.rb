@@ -1,6 +1,6 @@
 # This plugin requires mplayer 
 
-class GoogleTTS 
+class GoogleTtsHelper
     private 
         REQUEST = "http://translate.google.com/translate_tts?ie=UTF-8&total=1&idx=0&textlen=32&client=tw-ob&q="
         @@lang = "&tl="
@@ -9,7 +9,7 @@ class GoogleTTS
         FFMPEG = "ffmpeg -y -i "
         FF_PARA = "-vn -ar 44100 -ac 2 -ab 192k -f mp3 -metadata title=\"google\" -metadata artist=\"google\" "
         FILE = "google.wav "
-        OUTPUT = "google.mp3"
+        OUTPUT_FILE = "google.mp3"
         CD = "cd ~/music && "
         RM = "rm "
         @@download = ""
@@ -21,7 +21,11 @@ class GoogleTTS
             @message = "\""+REQUEST+message+@@lang+lang+"\""
             @@download = CD+MPLAYER + @message + MP_PARA + FILE
             @@delete = CD+RM+FILE
-            @@audio = CD+FFMPEG+FILE+FF_PARA+OUTPUT
+            @@audio = CD+FFMPEG+FILE+FF_PARA+OUTPUT_FILE
+        end
+
+        def getFileName
+            return OUTPUT_FILE
         end
 
         def load
