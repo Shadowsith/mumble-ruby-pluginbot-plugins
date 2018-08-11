@@ -6,7 +6,7 @@ class GoogleTTS < Plugin
     def init(init)
         super
         logger("INFO: INIT plugin #{self.class.name}.")
-        @@bot[:bot] = self
+        @@bot[:gtts] = self
         return @@bot
     end
 
@@ -16,7 +16,7 @@ class GoogleTTS < Plugin
 
     def help(h)
         h << "<hr><span style='color:red;'>Plugin #{self.class.name}</span><br>"
-        h << "<b>#{Conf.gvalue("main:control:string")}.gsay [message] [language]</b> - bot speaks from google translator engine<br>"
+        h << "<b>#{Conf.gvalue("main:control:string")}gsay [message] [language]</b> - bot speaks from google translator engine<br>"
         h
     end
 

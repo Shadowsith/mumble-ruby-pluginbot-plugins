@@ -1,4 +1,4 @@
-class MaryTTS
+class MaryTtsHelper
 
     private
         @@voice = {}
@@ -8,11 +8,11 @@ class MaryTTS
         LOCALE      = "&LOCALE="
         VOICE       = "&VOICE="        
         FFMPEG = "ffmpeg -y -i "
-        FF_PARA = "-vn -ar 44100 -ac 2 -ab 192k -f mp3 -metadata title=\"marytts\" -metadata artist=\"marytts\" "
+        FF_PARA = " -vn -ar 44100 -ac 2 -ab 192k -f mp3 -metadata title=\"marytts\" -metadata artist=\"marytts\" "
 
 
-        FILE = "marytts.wav "
-        OUTPUT = "marrytts.mp3"
+        FILE = "marytts.wav"
+        OUTPUT_FILE = "marrytts.mp3"
         @@download = ""        
         RM = "rm "
         @@delete = ""
@@ -26,27 +26,29 @@ class MaryTTS
         end
 
     public
-        def initialize(message, locale, voice)
+        def initialize(message, lang, voice)
             init_voices
-            puts(locale+" "+voice)
-            if (locale != "de"&& locale != "en")
-                locale = "en_US"
+            puts(lang+" "+voice)
+            if (lang != "de"&& lang != "en")
+                lang = "en_US"
             end
             
             if (voice != "male" && voice != "female") 
                 voice = "male"
             end
-            @@download = "\""+REQUEST+message+DEFAULT+LOCALE+locale+VOICE+@@voice[locale+"_"+voice]+"\""
-            @@audio = CD+FFMPEG+FILE+FF_PARA+OUTPUT
+            @@download = "\""+REQUEST+message+DEFAULT+LOCALE+lang+VOICE+@@voice[lang+"_"+voice]+"\""
+            puts(@@download)
+            @@audio = CD+FFMPEG+FILE+FF_PARA+OUTPUT_FILE
             @@delete = CD+RM+FILE
+        end
+
+        def getFileName
+            return OUTPUT_FILE
         end
 
         def load
             system(CD+"wget "+@@download+" -O"+ FILE)
             system(@@audio)
-            system(@@delete)
+            system(@@delete+" && pwd")
         end
 end
-
-m = MaryTTS.new("hallo welt","de","male")
-m.load
