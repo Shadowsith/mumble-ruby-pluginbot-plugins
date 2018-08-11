@@ -16,21 +16,21 @@ A short plugin overview:
 Information about the linux system where the pluginbot is running
 
 ### Search
-Demo plugin to search files in music folder of the bot
-**Third party requirements**: find 
+Demo plugin to search files in music folder of the bot<br>
+**Third party requirements**: find <br>
 
 ### GoogleTTS
-Text to speech functionality with help of google text to speech engine
+Text to speech functionality with help of google text to speech engine<br>
 **Third party requirements**: mplayer 
 
 ### MaryTTS
-Text to speech functionality with help of open source marry text to speech engine
+Text to speech functionality with help of open source marry text to speech engine<br>
 **Third party requirements**: wget
 
 ### Delete (Coming soon)
-Delete add music files from file system
+Delete add music files from file system<br>
 **Third party requirements**: rm
 
 ### Move (Coming soon)
-Move/rename music files from one folder into onther 
+Move/rename music files from one folder into onther<br>
 **Third party requirements**: mv
