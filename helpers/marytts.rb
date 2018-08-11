@@ -29,7 +29,7 @@ class MaryTtsHelper
         def initialize(message, lang, voice)
             init_voices
             puts(lang+" "+voice)
-            if (lang != "de"&& lang != "en")
+            if (lang != "de"&& lang != "en_US")
                 lang = "en_US"
             end
             
