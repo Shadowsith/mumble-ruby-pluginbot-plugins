@@ -1,8 +1,12 @@
 # requires mplayer console program
+require "yaml"
 require "../helpers/google.rb"
 
 class GoogleTTS < Plugin
-
+    private
+        CONFIG = "../plugins/gtts.yml"
+    
+    public
     def init(init)
         super
         logger("INFO: INIT plugin #{self.class.name}.")
@@ -16,7 +20,9 @@ class GoogleTTS < Plugin
 
     def help(h)
         h << "<hr><span style='color:red;'>Plugin #{self.class.name}</span><br>"
-        h << "<b>#{Conf.gvalue("main:control:string")}gsay [message] [language]</b> - bot speaks from google translator engine<br>"
+        h << "<b>#{Conf.gvalue("main:control:string")}gsay [message]</b> - bot speaks from google translator engine<br>"
+        h << "<b>#{Conf.gvalue("main:control:string")}glang [language]</b> - set language of the bot<br>"
+        h << "<b>#{Conf.gvalue("main:control:string")}gconf</b> - get settings<br>"
         h
     end
 
@@ -25,12 +31,8 @@ class GoogleTTS < Plugin
         parts = message.split(" ")
         if parts[0] == "gsay"
             if parts[1] != "" || parts[1] != nil?
-                message = parts[1]
-                if parts[2] != "" || parts[2] != nil?
-                    lang = parts[2]
-                else
-                    lang = "en"
-                end
+                message = message.to_s.sub("gsay","")
+                lang = getLang
                 google = GoogleTtsHelper.new(message,lang)
                 th1 = Thread.new {
                     google.load
@@ -46,6 +48,28 @@ class GoogleTTS < Plugin
                 end
             end
         end
+        if parts[0] == "glang"
+            if !parts[1].to_s.empty? && parts[1].to_s.length == 2
+                setLang(parts[1])
+            end
+        end
+        if parts[0] == "gconf"
+            messageto(msg.actor,"<br>Current language: "+getLang+"<br>")
+        end
+    end
+
+    def getLang
+        data = YAML::load(File.open(CONFIG))
+        return data["lang"]
+    end
+
+    # TODO add checker for all valid google languages
+    def setLang(lang)
+        data = YAML::load(File.open(CONFIG))
+        data["lang"] = lang
+        File.open(CONFIG, "w+") {
+            |f| f.write(data.to_yaml)
+        }
     end
 end
 

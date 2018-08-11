@@ -2,8 +2,10 @@ require "yaml"
 require "../helpers/marytts.rb"
 
 class MaryTTS < Plugin
+    private
     CONFIG = "../plugins/mtts.yml"
 
+    public
     def init(init)
         super
         logger("INFO: INIT plugin #{self.class.name}.")
@@ -30,7 +32,7 @@ class MaryTTS < Plugin
         begin
         if parts[0] == "say"
             if parts[1] != "" || parts[1] != nil?
-                message = parts[1]
+                message = message.to_s.sub("say","")
                 lang = getLang
                 if lang.to_s.empty? || lang == "en"
                     lang = "en_US"
@@ -39,7 +41,6 @@ class MaryTTS < Plugin
                 if voice.to_s.empty?
                     voice = "male"
                 end
-                privatemessage(voice)
                 mary = MaryTtsHelper.new(message,lang,voice)
                 th1 = Thread.new {
                     mary.load
@@ -72,8 +73,7 @@ class MaryTTS < Plugin
             end
         end
         if parts[0] == "mttsconf"
-            actor = msg.actor
-            messageto(actor,"<br>Language: "+getLang+"<br> Voice: "+getVoice+"<br>")
+            messageto(msg.actor,"<br>Language: "+getLang+"<br> Voice: "+getVoice+"<br>")
         end
         rescue Exception => ex
             messageto(msg.actor,"MarryTTS Error: "+ex.message)
