@@ -14,3 +14,23 @@ A short plugin overview:
 
 ### System
 Information about the linux system where the pluginbot is running
+
+### Search
+Demo plugin to search files in music folder of the bot
+**Third party requirements**: find 
+
+### GoogleTTS
+Text to speech functionality with help of google text to speech engine
+**Third party requirements**: mplayer 
+
+### MaryTTS
+Text to speech functionality with help of open source marry text to speech engine
+**Third party requirements**: wget
+
+### Delete (Coming soon)
+Delete add music files from file system
+**Third party requirements**: rm
+
+### Move (Coming soon)
+Move/rename music files from one folder into onther 
+**Third party requirements**: mv
