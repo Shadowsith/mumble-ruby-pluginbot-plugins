@@ -21,11 +21,11 @@ Demo plugin to search files in music folder of the bot<br>
 
 ### GoogleTTS
 Text to speech functionality with help of google text to speech engine<br>
-**Third party requirements**: mplayer 
+**Third party requirements**: mplayer, ffmpeg
 
 ### MaryTTS
 Text to speech functionality with help of open source marry text to speech engine<br>
-**Third party requirements**: wget
+**Third party requirements**: wget, ffmpeg
 
 ### Delete (Coming soon)
 Delete add music files from file system<br>
@@ -34,3 +34,7 @@ Delete add music files from file system<br>
 ### Move (Coming soon)
 Move/rename music files from one folder into onther<br>
 **Third party requirements**: mv
+
+### Metadata  (Coming soon)
+Add/Change/View metadata to existing audiofiles<br>
+**Third party requirements**: ffmpeg
