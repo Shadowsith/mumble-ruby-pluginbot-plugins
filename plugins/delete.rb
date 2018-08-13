@@ -1,3 +1,4 @@
+require "../helpers/deleteh.rb"
 class Delete < Plugin
 
     def init(init)
@@ -23,6 +24,8 @@ class Delete < Plugin
         if msgParts[0] == "delete"
             if !msgParts[1].to_s.empty? 
                 file = msgParts[1]
+                d = DeleteHelper.new(file)
+                privatemessage(d.delete)
             end
         end
     end
