@@ -27,9 +27,11 @@ Text to speech functionality with help of google text to speech engine<br>
 Text to speech functionality with help of open source marry text to speech engine<br>
 **Third party requirements**: wget, ffmpeg
 
-### Delete (Coming soon)
-Delete add music files from file system<br>
+### Remove
+Deletes music files from file system<br>
 **Third party requirements**: rm
+
+**TODO**: Testing, user permissions
 
 ### Move (Coming soon)
 Move/rename music files from one folder into onther<br>
