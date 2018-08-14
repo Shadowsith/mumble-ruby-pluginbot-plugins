@@ -7,7 +7,7 @@ class MaryTtsHelper
     LOCALE      = "&LOCALE="
     VOICE       = "&VOICE="        
     FFMPEG = "ffmpeg -y -i "
-    FF_PARA = " -vn -ar 44100 -ac 2 -ab 192k -f mp3 -metadata title=\"marytts\" -metadata artist=\"marytts\" "
+    FF_PARA = " -vn -ar 44100 -ac 2 -ab 192k -f mp3 -metadata title=\"marytts\" -metadata artist=\"marytts\" -filter:a \"volume=2.0\" "
 
     FILE = "~/music/marytts.wav"
     OUTPUT_FILE = "~/music/marytts.mp3"
@@ -44,8 +44,8 @@ class MaryTtsHelper
     end
 
     def load
-        puts("wget "+@@download+" -O "+FILE+" -T 1")
-        system("wget "+@@download+" -O "+FILE+" -T 1")
+        puts("wget "+@@download+" -O "+FILE+" -T 1 --tries=5")
+        system("wget "+@@download+" -O "+FILE+" -T 1 --tries=5")
         system(@@audio)
         system(@@delete)
     end

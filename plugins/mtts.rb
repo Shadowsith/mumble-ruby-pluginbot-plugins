@@ -22,6 +22,7 @@ class MaryTTS < Plugin
         h << "<b>#{Conf.gvalue("main:control:string")}say [message]</b> - bot says the message<br>"
         h << "<b>#{Conf.gvalue("main:control:string")}mlang [de|en]</b> - change language of the bot<br>"
         h << "<b>#{Conf.gvalue("main:control:string")}mvoice [male|female]</b> - change voice of the bot<br>"
+        h << "<b>#{Conf.gvalue("main:control:string")}msize [number]</b> - allowed number of characters (max 200)<br>"
         h << "<b>#{Conf.gvalue("main:control:string")}mttsconf - get settings<br>"
         h
     end
@@ -32,48 +33,42 @@ class MaryTTS < Plugin
         begin
         if parts[0] == "say"
             if parts[1] != "" || parts[1] != nil?
-                message = message.to_s.sub("say","")
-                lang = getLang
-                if lang.to_s.empty? || lang == "en"
-                    lang = "en_US"
-                end
-                voice = getVoice
-                if voice.to_s.empty?
-                    voice = "male"
-                end
-                mary = MaryTtsHelper.new(message,lang,voice)
-                mary.load
-                @@bot[:mpd].update
-                @@bot[:mpd].add("marytts.mp3")
-                if @@bot[:mpd].queue.length > 0
-                    lastsongid = @@bot[:mpd].queue.length.to_i - 1
-                    @@bot[:mpd].play (lastsongid)
-                    @@bot[:cli].me.deafen false if @@bot[:cli].me.deafened?
-                    @@bot[:cli].me.mute false if @@bot[:cli].me.muted?
+                message = message.to_s.sub("say","").gsub("<br>"," ")
+                if message.length <= getSize
+                    lang = getLang
+                    if lang.to_s.empty?
+                        lang = "en_US"
+                    end
+                    voice = getVoice
+                    if voice.to_s.empty?
+                        voice = "male"
+                    end
+                    mary = MaryTtsHelper.new(message,lang,voice)
+                    mary.load
+                    @@bot[:mpd].update
+                    @@bot[:mpd].add("marytts.mp3")
+                    if @@bot[:mpd].queue.length > 0
+                        lastsongid = @@bot[:mpd].queue.length.to_i - 1
+                        @@bot[:mpd].play (lastsongid)
+                        @@bot[:cli].me.deafen false if @@bot[:cli].me.deafened?
+                        @@bot[:cli].me.mute false if @@bot[:cli].me.muted?
+                    end
+                else 
+                    privatemessage("The message is greater than the allowed limit of "+getSize.to_s+" characters!")
                 end
             end
-            return 0
         end
         if parts[0] == "mlang"
-            if !parts[1].to_s.empty? 
-                lang = parts[1]
-                if lang == "de" || lang == "en"
-                    setLang(lang)
-                end
-            end
-            return 0
+            setLang(parts[1])
         end
         if parts[0] == "mvoice"
-            if !parts[1].to_s.empty? 
-                voice = parts[1]
-                if voice == "male" || voice == "female"
-                    setVoice(voice)
-                end
-            end
-            return 0
+            setVoice(parts[1])
+        end
+        if parts[0] == "msize"
+            setSize(parts[1])
         end
         if parts[0] == "mttsconf"
-            messageto(msg.actor,"<br>Language: "+getLang+"<br> Voice: "+getVoice+"<br>")
+            messageto(msg.actor,"<br>Language: "+getLang+"<br>Voice: "+getVoice+"<br>Max Characters: "+getSize.to_s+"<br>")
         end
         rescue Exception => ex
             messageto(msg.actor,"MarryTTS Error: "+ex.message)
@@ -87,10 +82,21 @@ class MaryTTS < Plugin
 
     def getVoice
         data = YAML::load(File.open(CONFIG))
+        if data["voice"] == "en"
+            data["voice"] = "en_US"
+        end
         return data["voice"]
     end
 
+    def getSize
+        data = YAML::load(File.open(CONFIG))
+        return data["size"]
+    end
+
     def setLang(lang)
+        if lang != "de" || lang != "en"
+            lang = "en"
+        end
         data = YAML::load(File.open(CONFIG))
         data["lang"] = lang
         File.open(CONFIG, "w+") {
@@ -99,10 +105,25 @@ class MaryTTS < Plugin
     end
 
     def setVoice(voice)
+        if voice != "male" || voice != "female"
+            voice = "male"
+        end
         data = YAML::load(File.open(CONFIG))
         data["voice"] = voice
         File.open(CONFIG, "w+") {
             |f| f.write(data.to_yaml)
         }
+    end
+
+    def setSize(size)
+        if size <= 200
+            data = YAML::load(File.open(CONFIG))
+            data["size"] = size
+            File.open(CONFIG, "w+") {
+                |f| f.write(data.to_yaml)
+            }
+        else
+            privatemessage("TTS message can't be greater than 200 characters")
+        end
     end
 end
