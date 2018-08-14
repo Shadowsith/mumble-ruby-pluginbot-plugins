@@ -41,11 +41,10 @@ class MaryTTS < Plugin
                 if voice.to_s.empty?
                     voice = "male"
                 end
+                privatemessage(message+" "+lang+" "+voice)
                 mary = MaryTtsHelper.new(message,lang,voice)
-                th1 = Thread.new {
-                    mary.load
-                }
-                th1.join
+                mary.load
+                privatemessage(mary.getFileName)
 
                 @@bot[:mpd].add(mary.getFileName)
                 if @@bot[:mpd].queue.length > 0
@@ -55,6 +54,7 @@ class MaryTTS < Plugin
                     @@bot[:cli].me.mute false if @@bot[:cli].me.muted?
                 end
             end
+            return 0
         end
         if parts[0] == "mlang"
             if !parts[1].to_s.empty? 
@@ -63,6 +63,7 @@ class MaryTTS < Plugin
                     setLang(lang)
                 end
             end
+            return 0
         end
         if parts[0] == "mvoice"
             if !parts[1].to_s.empty? 
@@ -71,6 +72,7 @@ class MaryTTS < Plugin
                     setVoice(voice)
                 end
             end
+            return 0
         end
         if parts[0] == "mttsconf"
             messageto(msg.actor,"<br>Language: "+getLang+"<br> Voice: "+getVoice+"<br>")

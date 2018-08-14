@@ -1,5 +1,5 @@
-require "../helpers/removeh.rb"
-class Remove < Plugin
+require "../helpers/moveh.rb"
+class Move < Plugin
 
     def init(init)
         super
@@ -14,19 +14,20 @@ class Remove < Plugin
 
     def help(h)
         h << "<hr><span style='color:red;'>Plugin #{self.class.name}</span><br>"
-        h << "<b>#{Conf.gvalue("main:control:string")}remove [file] - delete file from bot music folder<br>"
+        h << "<b>#{Conf.gvalue("main:control:string")}move [file] [new name] - rename file<br>"
         h
     end
 
     def handle_chat(msg, message) 
         super
         msgParts = message.split(" ")
-        if msgParts[0] == "remove"
-            if !msgParts[1].to_s.empty? 
+        if msgParts[0] == "move"
+            if !msgParts[1].to_s.empty? && !msgParts[2].to_s.empty?
                 file = msgParts[1]
-                d = RemoveHelper.new(file)
+                rename = msgParts[2]
+                m = MoveHelper.new(file,rename)
                 @@bot[:mpd].update
-                privatemessage(d.delete)
+                privatemessage(m.move)
             end
         end
     end
