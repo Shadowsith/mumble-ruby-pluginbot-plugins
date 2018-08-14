@@ -9,7 +9,7 @@ class MaryTTS < Plugin
     def init(init)
         super
         logger("INFO: INIT plugin #{self.class.name}.")
-        @@bot[:gtts] = self
+        @@bot[:mtts] = self
         return @@bot
     end
 
@@ -41,12 +41,10 @@ class MaryTTS < Plugin
                 if voice.to_s.empty?
                     voice = "male"
                 end
-                privatemessage(message+" "+lang+" "+voice)
                 mary = MaryTtsHelper.new(message,lang,voice)
                 mary.load
-                privatemessage(mary.getFileName)
-
-                @@bot[:mpd].add(mary.getFileName)
+                @@bot[:mpd].update
+                @@bot[:mpd].add("marytts.mp3")
                 if @@bot[:mpd].queue.length > 0
                     lastsongid = @@bot[:mpd].queue.length.to_i - 1
                     @@bot[:mpd].play (lastsongid)
