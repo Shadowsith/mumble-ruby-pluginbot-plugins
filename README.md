@@ -1,7 +1,8 @@
 # Mumble-Ruby-PluginBot-Plugins
 A plugin collection for the [mumble-ruby-pluginbot](https://github.com/Shadowsith/mumble-ruby-pluginbot)
 
-Only use the plugins at your own risk.
+Only use the plugins at your own risk.<br>
+It is highly recommended to only use plugins which are in the stable branch.
 
 ## Installation
 Firstly make sure that the pluginbot is [installed](http://mumble-ruby-pluginbot.readthedocs.io/en/master/installation_howto.html) correctly: 
