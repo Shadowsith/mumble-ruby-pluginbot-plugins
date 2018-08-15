@@ -1,4 +1,4 @@
-class MaryTtsHelper
+class MaryTTSHelper
 
   private
     @@voice = {}

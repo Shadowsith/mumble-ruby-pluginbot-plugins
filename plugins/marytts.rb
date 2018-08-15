@@ -1,9 +1,9 @@
 require "yaml"
-require "../helpers/marytts.rb"
+require "../helpers/maryttsh.rb"
 
 class MaryTTS < Plugin
     private
-    CONFIG = "../plugins/mtts.yml"
+    CONFIG = "../plugins/marytts.yml"
 
     public
     def init(init)
@@ -23,7 +23,7 @@ class MaryTTS < Plugin
         h << "<b>#{Conf.gvalue("main:control:string")}mlang [de|en]</b> - change language of the bot<br>"
         h << "<b>#{Conf.gvalue("main:control:string")}mvoice [male|female]</b> - change voice of the bot<br>"
         h << "<b>#{Conf.gvalue("main:control:string")}msize [number]</b> - allowed number of characters (max 200)<br>"
-        h << "<b>#{Conf.gvalue("main:control:string")}mttsconf - get settings<br>"
+        h << "<b>#{Conf.gvalue("main:control:string")}mconf - get settings<br>"
         h
     end
 
@@ -43,7 +43,7 @@ class MaryTTS < Plugin
                     if voice.to_s.empty?
                         voice = "male"
                     end
-                    mary = MaryTtsHelper.new(message,lang,voice)
+                    mary = MaryTTSHelper.new(message,lang,voice)
                     mary.load
                     @@bot[:mpd].update
                     @@bot[:mpd].add("marytts.mp3")
@@ -67,7 +67,7 @@ class MaryTTS < Plugin
         if parts[0] == "msize"
             setSize(parts[1])
         end
-        if parts[0] == "mttsconf"
+        if parts[0] == "mconf"
             messageto(msg.actor,"<br>Language: "+getLang+"<br>Voice: "+getVoice+"<br>Max Characters: "+getSize.to_s+"<br>")
         end
         rescue Exception => ex
