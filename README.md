@@ -1,7 +1,8 @@
 # Mumble-Ruby-PluginBot-Plugins (Stable branch)
 A plugin collection for the [mumble-ruby-pluginbot](https://github.com/Shadowsith/mumble-ruby-pluginbot)
 
-Only use the plugins at your own risk.
+Only use the plugins at your own risk.<br>
+It is highly recommended to use only plugins from this (stable) branch.
 
 ## Installation
 Firstly make sure that the pluginbot is [installed](http://mumble-ruby-pluginbot.readthedocs.io/en/master/installation_howto.html) correctly: 
@@ -16,8 +17,7 @@ A short plugin overview:
 Information about the linux system where the pluginbot is running
 
 ### Search
-Demo plugin to search files in music folder of the bot<br>
-**Third party requirements**: find <br>
+Demo plugin to search files in music folder of the bot
 
 ### SearchPlay
 Are you lazy to use .add and .play each time for playing an audio file?
