@@ -7,6 +7,37 @@ class GoogleTTS < Plugin
 
   CONFIG = "../plugins/googletts.yml"
 
+  def updateBot
+    @@bot[:mpd].update
+    while @@bot[:mpd].status[:updating_db]
+      sleep 0.5
+    end
+  end
+
+  def play(google)
+    @@bot[:mpd].add(google.getFileName)
+    if @@bot[:mpd].queue.length > 0
+      lastsongid = @@bot[:mpd].queue.length.to_i - 1
+      @@bot[:mpd].play (lastsongid)
+      @@bot[:cli].me.deafen false if @@bot[:cli].me.deafened?
+      @@bot[:cli].me.mute false if @@bot[:cli].me.muted?
+      clearQueue(google)
+    end
+  end
+
+  def clearQueue(google)
+    songnr = 0
+    @@bot[:mpd].queue.each do |song|
+      if @@bot[:mpd].queue.length - 1 <= songnr
+        break
+      elsif song.file == mary.getFileName
+        @@bot[:mpd].delete songnr.to_s
+        songnr -= 1
+      end
+      songnr += 1
+    end
+  end
+
   public
 
   def init(init)
@@ -35,19 +66,14 @@ class GoogleTTS < Plugin
       if parts[1] != "" || parts[1] != nil?
         message = message.to_s.sub("gsay", "")
         lang = getLang
-        google = GoogleTtsHelper.new(message, lang)
-        th1 = Thread.new {
-          google.load
-        }
-        th1.join
-
-        @@bot[:mpd].add(google.getFileName)
-        if @@bot[:mpd].queue.length > 0
-          lastsongid = @@bot[:mpd].queue.length.to_i - 1
-          @@bot[:mpd].play (lastsongid)
-          @@bot[:cli].me.deafen false if @@bot[:cli].me.deafened?
-          @@bot[:cli].me.mute false if @@bot[:cli].me.muted?
+        if lang.to_s.empty?
+          lang = "en"
         end
+        path = Conf.gvalue("plugin:mpd:musicfolder")
+        google = GoogleTTSHelper.new(path, message, lang)
+        google.load
+        updateBot
+        play(google)
       end
     end
     if parts[0] == "glang"

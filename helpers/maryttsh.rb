@@ -14,6 +14,7 @@ class MaryTTSHelper
   FILE = "marytts.wav"
   OUTPUT_FILE = "marytts.mp3"
   RM = "rm "
+  WGET = "wget -q "
 
   def init_voices
     @@voice["de_male"] = "bits3"
@@ -40,8 +41,8 @@ class MaryTTSHelper
   end
 
   def load
-    puts("wget -q " + @download + " -O " + @mpath + FILE + " -T 1 --tries=4")
-    system("wget -q " + @download + " -O " + @mpath + FILE + " -T 1 --tries=4")
+    puts(WGET + @download + " -O " + @mpath + FILE + " -T 1 --tries=4")
+    system(WGET + @download + " -O " + @mpath + FILE + " -T 1 --tries=4")
     system(@audio)
     system(@delete)
   end
