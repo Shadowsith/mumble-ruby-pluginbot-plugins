@@ -18,21 +18,9 @@ class PicoTTSHelper
   RM = "rm "
   QUIET = " > /dev/null 2>&1"
 
-  def init_languages
-    @@lang["de"] == "de-DE"
-    @@lang["uk"] == "en-UK"
-    @@lang["us"] == "en-US"
-    @@lang["es"] == "es-ES"
-    @@lang["fr"] == "fr-FR"
-    @@lang["it"] == "it-IT"
-  end
-
   public
 
   def initialize(path, message, lang)
-    if @@lang[lang].to_s.empty?
-      lang = "en-US"
-    end
     @create = PICO + LANG + lang + WAVE + path + FILE + " \"" + message + "\""
     @audio = FFMPEG + path + FILE + FF_PARA + path + OUTPUT_FILE
     @delete = RM + path + FILE
@@ -49,6 +37,3 @@ class PicoTTSHelper
     system(@delete)
   end
 end
-
-p = PicoTTSHelper.new("~/music/", "Hallo Welt du bist super", "de-DE")
-p.load
