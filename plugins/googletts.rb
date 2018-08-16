@@ -1,42 +1,14 @@
 # requires mplayer console program
 require "yaml"
+require "../helpers/ttsh.rb"
 require "../helpers/googlettsh.rb"
 
 class GoogleTTS < Plugin
+  include ITextToSpeech
+
   private
 
   CONFIG = "../plugins/googletts.yml"
-
-  def updateBot
-    @@bot[:mpd].update
-    while @@bot[:mpd].status[:updating_db]
-      sleep 0.5
-    end
-  end
-
-  def play(google)
-    @@bot[:mpd].add(google.getFileName)
-    if @@bot[:mpd].queue.length > 0
-      lastsongid = @@bot[:mpd].queue.length.to_i - 1
-      @@bot[:mpd].play (lastsongid)
-      @@bot[:cli].me.deafen false if @@bot[:cli].me.deafened?
-      @@bot[:cli].me.mute false if @@bot[:cli].me.muted?
-      clearQueue(google)
-    end
-  end
-
-  def clearQueue(google)
-    songnr = 0
-    @@bot[:mpd].queue.each do |song|
-      if @@bot[:mpd].queue.length - 1 <= songnr
-        break
-      elsif song.file == mary.getFileName
-        @@bot[:mpd].delete songnr.to_s
-        songnr -= 1
-      end
-      songnr += 1
-    end
-  end
 
   public
 
@@ -62,27 +34,31 @@ class GoogleTTS < Plugin
   def handle_chat(msg, message)
     super
     parts = message.split(" ")
-    if parts[0] == "gsay"
-      if parts[1] != "" || parts[1] != nil?
-        message = message.to_s.sub("gsay", "")
-        lang = getLang
-        if lang.to_s.empty?
-          lang = "en"
+    begin
+      if parts[0] == "gsay"
+        if parts[1] != "" || parts[1] != nil?
+          message = message.to_s.sub("gsay", "")
+          lang = getLang
+          if lang.to_s.empty?
+            lang = "en"
+          end
+          path = Conf.gvalue("plugin:mpd:musicfolder")
+          google = GoogleTTSHelper.new(path, message, lang)
+          google.load
+          updateBot(@@bot)
+          play(@@bot, google)
         end
-        path = Conf.gvalue("plugin:mpd:musicfolder")
-        google = GoogleTTSHelper.new(path, message, lang)
-        google.load
-        updateBot
-        play(google)
       end
-    end
-    if parts[0] == "glang"
-      if !parts[1].to_s.empty? && parts[1].to_s.length == 2
-        setLang(parts[1])
+      if parts[0] == "glang"
+        if !parts[1].to_s.empty? && parts[1].to_s.length == 2
+          setLang(parts[1])
+        end
       end
-    end
-    if parts[0] == "gconf"
-      messageto(msg.actor, "<br>Current language: " + getLang + "<br>")
+      if parts[0] == "gconf"
+        messageto(msg.actor, "<br>Current language: " + getLang + "<br>")
+      end
+    rescue Exception => ex
+      privatemessage("GoogleTTS Error: " + ex.message)
     end
   end
 

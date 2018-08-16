@@ -21,11 +21,10 @@ class System < Plugin
 
   def handle_chat(msg, message)
     super
-    actor = msg.actor
     if message == "sysinfo"
       head = "<br><span style='color:lightblue;'>System information:</span><br>"
       os = %x( uname -smr ) + "<br>"
-      messageto(actor, head + os)
+      privatemessage(head + os)
     end
   end
 end

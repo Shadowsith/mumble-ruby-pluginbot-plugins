@@ -1,7 +1,10 @@
 require "yaml"
+require "../helpers/ttsh.rb"
 require "../helpers/maryttsh.rb"
 
 class MaryTTS < Plugin
+  include ITextToSpeech
+
   private
 
   CONFIG = "../plugins/marytts.yml"
@@ -59,37 +62,6 @@ class MaryTTS < Plugin
     end
   end
 
-  def updateBot
-    @@bot[:mpd].update
-    while @@bot[:mpd].status[:updating_db]
-      sleep 0.5
-    end
-  end
-
-  def play(mary)
-    @@bot[:mpd].add(mary.getFileName)
-    if @@bot[:mpd].queue.length > 0
-      lastsongid = @@bot[:mpd].queue.length.to_i - 1
-      @@bot[:mpd].play (lastsongid)
-      @@bot[:cli].me.deafen false if @@bot[:cli].me.deafened?
-      @@bot[:cli].me.mute false if @@bot[:cli].me.muted?
-      clearQueue(mary)
-    end
-  end
-
-  def clearQueue(mary)
-    songnr = 0
-    @@bot[:mpd].queue.each do |song|
-      if @@bot[:mpd].queue.length - 1 <= songnr
-        break
-      elsif song.file == mary.getFileName
-        @@bot[:mpd].delete songnr.to_s
-        songnr -= 1
-      end
-      songnr += 1
-    end
-  end
-
   public
 
   def init(init)
@@ -132,8 +104,10 @@ class MaryTTS < Plugin
             path = Conf.gvalue("plugin:mpd:musicfolder")
             mary = MaryTTSHelper.new(path, message, lang, voice)
             mary.load
-            updateBot
-            play(mary)
+            updateBot(@@bot)
+            play(@@bot, mary)
+            #updateBot
+            #play(mary)
           else
             privatemessage("The message is greater than the allowed limit of " + getSize.to_s + " characters!")
           end

@@ -29,8 +29,10 @@ The new commands <code>splay [file] | spl [file]</code> automatically add and pl
 Text to speech functionality with help of google text to speech engine<br>
 **Third party requirements**: mplayer
 
-### MaryTTS (operational)
+### MaryTTS
 Text to speech functionality with help of open source marry text to speech engine<br>
+
+### PicoTTS
 
 #### Implemanted Languages
 * English
