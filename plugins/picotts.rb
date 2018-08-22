@@ -9,7 +9,7 @@ class PicoTTS < Plugin
   private
 
   @@lang = {}
-  @@l = ["de", "uk", "us", "es", "fr", "it"]
+  @@ldef = {}
   CONFIG = "../plugins/picotts.yml"
 
   def getLang
@@ -32,11 +32,18 @@ class PicoTTS < Plugin
 
   def init_languages
     @@lang["de"] = "de-DE"
-    @@lang["uk"] = "en-UK"
+    @@lang["gb"] = "en-GB"
     @@lang["us"] = "en-US"
     @@lang["es"] = "es-ES"
     @@lang["fr"] = "fr-FR"
     @@lang["it"] = "it-IT"
+
+    @@ldef["de"] = "German"
+    @@ldef["gb"] = "British English"
+    @@ldef["us"] = "US English"
+    @@ldef["es"] = "Spanish"
+    @@ldef["fr"] = "French"
+    @@ldef["it"] = "Italian"
   end
 
   public
@@ -63,10 +70,10 @@ class PicoTTS < Plugin
   def handle_chat(msg, message)
     super
     parts = message.split(" ")
+    init_languages
     begin
       if parts[0] == "psay"
         if parts[1] != "" || parts[1] != nil?
-          init_languages
           message = message.to_s.sub("psay", "")
           lang = @@lang[getLang]
           if lang.to_s.empty?
@@ -84,9 +91,9 @@ class PicoTTS < Plugin
           setLang(parts[1])
         else
           text = "<br><span style='color:lightblue;'>" \
-          "<b>All valid languages:</b></span><br>"
-          for i in 0..@@l.length - 1
-            text += @@lang[@@l[i]] + "<br>"
+          "<b>All avalible languages for plang [lang]:</b></span><br>"
+          for i in 0..@@lang.length - 1
+            text += @@lang.keys[i].to_s + " - " + @@ldef[@@lang.keys[i]] + "<br>"
           end
           privatemessage(text)
         end
