@@ -6,96 +6,58 @@ class ID3v2
     !string.match(/\A[a-zA-Z0-9\-._\s:!'@{}()#;&]*\z/).nil?
   end
 
+  def setter(file, name, parameter)
+    if !validate(file)
+      return "name/search string is not valid"
+    end
+    file = %x(#{@find} *#{file}*.mp3 -o -iname *#{file}*.opus | head -n1)
+    if file.empty?
+      return "No such file found"
+    else
+      system(@cmd + "--#{parameter} " + name + " " + file)
+      file = file.gsub(@cut)
+      return "Metatag for file #{file} updated sucessfully"
+    end
+  end
+
   public
 
   def initialize
     @cmd = "id3v2 "
     @find = "find $HOME/music/ -iname "
     @path = "$HOME/music/"
+    @cut = %x("$HOME/music/")
+  end
+
+  def deleteAll(file, name)
+    return setter(file, name, "delete-all")
   end
 
   def setAlbum(file, name)
-    if !validate(file)
-      return "name/search string is not valid"
-    end
-    file = %x(#{@find} *#{file}*.mp3 -o -iname *#{file}*.opus | head -n1)
-    if file.empty?
-      return "Not such file found"
-    else
-      system(@cmd + "-A " + name + " " + file)
-      return "Metatag updated sucessfully"
-    end
+    return setter(file, name, "album")
   end
 
   def setArtist(file, name)
-    if !validate(file)
-      return "name/search string is not valid"
-    end
-    file = %x(#{@find} *#{file}*.mp3 -o -iname *#{file}*.opus | head -n1)
-    if file.empty?
-      return "Not such file found"
-    else
-      system(@cmd + "-a " + name + " " + file)
-    end
+    return setter(file, name, "artist")
   end
 
   def setComment(file, comment)
-    if !validate(file)
-      return "name/search string is not valid"
-    end
-    file = %x(#{@find} *#{file}*.mp3 -o -iname *#{file}*.opus | head -n1)
-    if file.empty?
-      return "Not such file found"
-    else
-      system(@cmd + "-c " + comment + " " + file)
-    end
+    return setter(file, name, "comment")
   end
 
   def setGenreNo(file, num)
-    if !validate(file)
-      return "name/search string is not valid"
-    end
-    file = %x(#{@find} *#{file}*.mp3 -o -iname *#{file}*.opus | head -n1)
-    if file.empty?
-      return "Not such file found"
-    else
-      system(@cmd + "-a " + name + " " + file)
-    end
+    return setter(file, name, "genre")
   end
 
   def setTitle(file, name)
-    if !validate(file)
-      return "name/search string is not valid"
-    end
-    file = %x(#{@find} *#{file}*.mp3 -o -iname *#{file}*.opus | head -n1)
-    if file.empty?
-      return "Not such file found"
-    else
-      system(@cmd + "-t " + namei + " " + file)
-    end
+    return setter(file, name, "song")
   end
 
   def setTrackNo(file, num)
-    if !validate(file)
-      return "name/search string is not valid"
-    end
-    file = %x(#{@find} *#{file}*.mp3 -o -iname *#{file}*.opus | head -n1)
-    if file.empty?
-      return "Not such file found"
-    else
-      system(@cmd + "-T " + num.to_i + " " + file)
-    end
+    return setter(file, num.to_s, "track")
   end
 
   def setYear(file, num)
-    if !validate(file)
-      return "name/search string is not valid"
-    end
-    file = %x(#{@find} *#{file}*.mp3 -o -iname *#{file}*.opus | head -n1)
-    if file.empty?
-      return "Not such file found"
-    else
-      system(@cmd + "-y " + num.to_i + " " + file)
-    end
+    return setter(file, num.to_s, "year")
   end
 end
