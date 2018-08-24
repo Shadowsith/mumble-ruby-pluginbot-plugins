@@ -1,18 +1,23 @@
-
 class ID3v2
   private
 
   def setter(file, name, parameter)
     path = @path.to_s
     file = path[0, path.length - 1] + "/" + file
-    system("#{@cmd} --#{parameter} #{name} \"#{file}\"")
-    return "Metatag for file #{file} updated sucessfully"
+    ext = File.extname(file)
+    if ext == ".mp3"
+      system("#{@id3} --#{parameter} #{name} \"#{file}\"")
+      file.sub(path)
+      return "Metatag for file #{file} updated sucessfully"
+    else
+      return "Filetype #{ext} is not supported"
+    end
   end
 
   public
 
   def initialize
-    @cmd = "id3v2 "
+    @id3 = "id3v2 "
     @find = "find $HOME/music/ -iname "
     @path = %x(cd $HOME/music/ && pwd)
   end

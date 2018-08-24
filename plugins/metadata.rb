@@ -9,13 +9,13 @@ class Metadata < Plugin
     song = @@bot[:mpd].songs.select { |s| s.file.to_s.downcase.include? file.to_s.downcase }.first
     if !song.nil?
       meta = ""
-      meta = "<br>Title:  #{song.title}<br>" if !song.title.to_s.empty?
-      meta += "Artist:  #{song.artist}<br>" if !song.artist.to_s.empty?
-      meta += "Album:  #{song.artist}<br>" if !song.album.to_s.empty?
-      meta += "Genre:  #{song.genre}<br>" if !song.genre.to_s.empty?
-      meta += "Date:  #{song.date}<br>" if !song.date.to_s.empty?
-      meta += "File:  #{song.file}<br>" if !song.file.to_s.empty?
-      meta += "Length:  #{song.track_length}s<br>" if !song.track_length.to_s.empty?
+      meta = "<br>Title:  #{song.title}" if !song.title.to_s.empty?
+      meta += "<br>Artist:  #{song.artist}" if !song.artist.to_s.empty?
+      meta += "<br>Album:  #{song.artist}" if !song.album.to_s.empty?
+      meta += "<br>Genre:  #{song.genre}" if !song.genre.to_s.empty?
+      meta += "<br>Date:  #{song.date}" if !song.date.to_s.empty?
+      meta += "<br>File:  #{song.file}" if !song.file.to_s.empty?
+      meta += "<br>Length:  #{song.track_length}s<br>" if !song.track_length.to_s.empty?
       privatemessage(meta)
     else
       privatemessage("No file with pattern #{file} found")
