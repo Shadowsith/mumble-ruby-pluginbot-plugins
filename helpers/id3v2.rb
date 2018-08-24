@@ -3,9 +3,9 @@ class ID3v2
   private
 
   def setter(file, name, parameter)
-    file = @path + file
-    system(@cmd + "--#{parameter} " + name + " " + file)
-    file = file.gsub(@path)
+    path = @path.to_s
+    file = path[0, path.length - 1] + "/" + file
+    system("#{@cmd} --#{parameter} #{name} \"#{file}\"")
     return "Metatag for file #{file} updated sucessfully"
   end
 
@@ -14,7 +14,7 @@ class ID3v2
   def initialize
     @cmd = "id3v2 "
     @find = "find $HOME/music/ -iname "
-    @path = "$HOME/music/"
+    @path = %x(cd $HOME/music/ && pwd)
   end
 
   def deleteAll(file, name)
