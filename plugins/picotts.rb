@@ -61,7 +61,7 @@ class PicoTTS < Plugin
 
   def help(h)
     h << "<hr><span style='color:red;'>Plugin #{self.class.name}</span><br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}psay [message]</b> - bot speaks from pico2wave engine<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}say [message]</b> - bot speaks from pico2wave engine<br>"
     h << "<b>#{Conf.gvalue("main:control:string")}plang [language]</b> - set language of the bot<br>"
     h << "<b>#{Conf.gvalue("main:control:string")}pconf</b> - get settings<br>"
     h
@@ -72,9 +72,9 @@ class PicoTTS < Plugin
     parts = message.split(" ")
     init_languages
     begin
-      if parts[0] == "psay"
+      if parts[0] == "say"
         if parts[1] != "" || parts[1] != nil?
-          message = message.to_s.sub("psay", "")
+          message = message.to_s.sub("say", "")
           lang = @@lang[getLang]
           if lang.to_s.empty?
             lang = "en-US"

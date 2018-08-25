@@ -25,6 +25,25 @@ Are you lazy to use .add and .play each time for playing an audio file?
 
 The new commands <code>splay [file] | spl [file]</code> automatically add and play files if the search finds a file
 
+### Metadata
+This plugin allows to:
+* Show metadata from single file
+* List files with same search pattern in all meta tags
+* Set meta tags for mp3 files
+
+### PicoTTS
+Local text to speech functionality for the bot which includes 6 languages.
+
+* British English
+* US English
+* German
+* Spanish
+* French
+* Italian
+
+#### Installation
+
+
 ### GoogleTTS
 Text to speech functionality with help of google text to speech engine<br>
 **Third party requirements**: mplayer
@@ -32,7 +51,6 @@ Text to speech functionality with help of google text to speech engine<br>
 ### MaryTTS
 Text to speech functionality with help of open source marry text to speech engine<br>
 
-### PicoTTS
 
 #### Implemanted Languages
 * English

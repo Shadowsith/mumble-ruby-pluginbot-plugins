@@ -77,7 +77,7 @@ class MaryTTS < Plugin
 
   def help(h)
     h << "<hr><span style='color:red;'>Plugin #{self.class.name}</span><br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}say [message]</b> - bot says the message<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}msay [message]</b> - bot says the message<br>"
     h << "<b>#{Conf.gvalue("main:control:string")}mlang [de|en]</b> - change language of the bot<br>"
     h << "<b>#{Conf.gvalue("main:control:string")}mvoice [male|female]</b> - change voice of the bot<br>"
     h << "<b>#{Conf.gvalue("main:control:string")}msize [number]</b> - allowed number of characters (max 200)<br>"
@@ -89,9 +89,9 @@ class MaryTTS < Plugin
     super
     parts = message.split(" ")
     begin
-      if parts[0] == "say"
+      if parts[0] == "msay"
         if parts[1] != "" || parts[1] != nil?
-          message = message.to_s.sub("say", "").gsub("<br>", " ")
+          message = message.to_s.sub("msay", "").gsub("<br>", " ")
           if message.length <= getSize.to_i
             lang = getLang
             if lang.to_s.empty?
