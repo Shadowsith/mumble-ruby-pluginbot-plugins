@@ -1,13 +1,19 @@
 class ID3v2
   private
 
+  @@log = "/tmp/id3_err.log"
+
   def setter(file, name, parameter)
-    path = @path.to_s
-    file = path[0, path.length - 1] + "/" + file
+    file = @path + file
     ext = File.extname(file)
     if ext == ".mp3"
-      system("#{@id3} --#{parameter} #{name} \"#{file}\"")
-      file.sub(path)
+      cmd = "#{@id3} --#{parameter} \"#{name}\" \"#{file}\" &> #{@@log}"
+      system(cmd)
+      err = File.open(@@log).read
+      file = file[@path.length, file.length - 1]
+      if err.to_s.include? "denied"
+        return "Bot has no write permissions on file #{file}, no meta tags updated"
+      end
       return "Metatag for file #{file} updated sucessfully"
     else
       return "Filetype #{ext} is not supported"
@@ -20,6 +26,7 @@ class ID3v2
     @id3 = "id3v2 "
     @find = "find $HOME/music/ -iname "
     @path = %x(cd $HOME/music/ && pwd)
+    @path = @path.to_s[0, @path.to_s.length - 1] + "/"
   end
 
   def deleteAll(file, name)
@@ -38,7 +45,7 @@ class ID3v2
     return setter(file, name, "comment")
   end
 
-  def setGenreNo(file, num)
+  def setGenre(file, name)
     return setter(file, name, "genre")
   end
 
