@@ -1,6 +1,6 @@
 # requires mplayer console program
 require "yaml"
-require "../helpers/ttsh.rb"
+require "../helpers/tts.rb"
 require "../helpers/googlettsh.rb"
 
 class GoogleTTS < Plugin

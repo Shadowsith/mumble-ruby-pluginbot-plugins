@@ -3,6 +3,8 @@
 require "../helpers/id3v2.rb"
 
 class Metadata < Plugin
+  include IMpd
+
   private
 
   def getTableRow(col1, col2)
@@ -95,7 +97,7 @@ class Metadata < Plugin
   def init(init)
     super
     logger("INFO: INIT plugin #{self.class.name}.")
-    @@bot[:bot] = self
+    @@bot[:meta] = self
     return @@bot
   end
 
@@ -105,11 +107,18 @@ class Metadata < Plugin
 
   def help(h)
     h << "<hr><span style='color:red;'>Plugin #{self.class.name}</span><br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}meta [title|artist|album|genre|year|comment]" \
-    " [pattern] [value] - add/change metadata from first file with search pattern<br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}metadata [pattern] - show metadata from first audiofile with search pattern<br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}metalist [pattern] - list all files with same pattern<br>"
-    h << "<b>Information:</b> #{Conf.gvalue("main:control:string")}meta command works only with mp3 files<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}meta [title|artist|album" \
+    "|genre|year] [pattern] [value] - add/change metadata of " \
+    "first file with search pattern<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}metaall|mall [title| " \
+    "artist|album|genre|year] [pattern] [value] - add/change metadata " \
+    "for all files with same search pattern<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}metadata|mdata [pattern] - " \
+    "show metadata from first audiofile with search pattern<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}metalist|mlist [pattern] - " \
+    "list all files with same pattern<br>"
+    h << "<b>Information:</b> #{Conf.gvalue("main:control:string")}meta " \
+    "command works only with mp3 files<br>"
     h
   end
 
@@ -117,7 +126,7 @@ class Metadata < Plugin
     super
     parts = message.split(" ")
     begin
-      if parts[0] == "metadata"
+      if parts[0] == "metadata" || parts[0] == "mdata"
         if !parts[1].nil?
           pattern = parts[1..parts.length - 1].join(" ").to_s
           getTags(pattern)
@@ -126,7 +135,7 @@ class Metadata < Plugin
           "show metadata from audiofiles<br>")
         end
       end
-      if parts[0] == "metalist"
+      if parts[0] == "metalist" || parts[0] == "mlist"
         if !parts[1].nil?
           pattern = parts[1..parts.length - 1].join(" ").to_s
           songs = getSongs(pattern)
@@ -155,8 +164,8 @@ class Metadata < Plugin
             privatemessage("No file with pattern #{parts[1]} found")
           end
         else
-          privatemessage("Usage: #{Conf.gvalue("main:control:string")}metalist [pattern] -" \
-          "list all files with same pattern")
+          privatemessage("Usage: #{Conf.gvalue("main:control:string")}" \
+          "metalist [pattern] - list all files with same pattern")
         end
       end
       if parts[0] == "meta"
@@ -164,7 +173,10 @@ class Metadata < Plugin
         file = parts[2].to_s
         val = parts[3..parts.length - 1].join(" ").to_s
         if !tag.empty? && !file.empty? && !val.empty?
-          song = @@bot[:mpd].songs.select { |s| s.file.to_s.downcase.include? file.downcase }.first
+          song = @@bot[:mpd].songs.select {
+            |s|
+            s.file.to_s.downcase.include? file.downcase
+          }.first
           if !song.nil?
             text = @@id3.setTitle(song.file, val) if tag == "title"
             text = @@id3.setArtist(song.file, val) if tag == "artist"
@@ -175,7 +187,30 @@ class Metadata < Plugin
             text = "No file found"
           end
           privatemessage(text)
-          @@bot[:mpd].update
+          updateBot(@@bot)
+        else
+          privatemessage("Wrong number of parameters!")
+        end
+      end
+      if parts[0] == "metaall" || parts[0] == "mall"
+        tag = parts[1].to_s
+        search = parts[2].to_s
+        val = parts[3..parts.length - 1].join(" ").to_s
+        if !tag.empty? && !file.empty? && !val.empty?
+          songs = getSongs(search)
+          if !songs.nil?
+            for song in songs
+              text = @@id3.setTitle(song.file, val) if tag == "title"
+              text = @@id3.setArtist(song.file, val) if tag == "artist"
+              text = @@id3.setAlbum(song.file, val) if tag == "album"
+              text = @@id3.setGenre(song.file, val) if tag == "genre"
+              text = @@id3.setYear(song.file, val) if tag == "year"
+            end
+          else
+            text = "No file found"
+          end
+          privatemessage(text)
+          updateBot(@@bot)
         else
           privatemessage("Wrong number of parameters!")
         end

@@ -1,6 +1,6 @@
 # requires svox pico console program
 require "yaml"
-require "../helpers/ttsh.rb"
+require "../helpers/tts.rb"
 require "../helpers/picottsh.rb"
 
 class PicoTTS < Plugin
