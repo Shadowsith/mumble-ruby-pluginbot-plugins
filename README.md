@@ -1,8 +1,17 @@
 # Mumble-Ruby-PluginBot-Plugins
 A plugin collection for the [mumble-ruby-pluginbot](https://github.com/Shadowsith/mumble-ruby-pluginbot)
 
+<div align="center">
+   <img src="./logo/mumble-ruby-pluginbot.png" width="300px" heigth="300px">
+</div>
+
 Only use the plugins at your own risk.<br>
 It is highly recommended to only use plugins which are in the stable branch.
+
+## Motivaton/Target
+
+Target of this project is to merge the plugins later directly to the orginal pluginbot and
+make it better comparable to the Teamspeak/Discord bot "Sinusbot"
 
 ## Plugins
 A short plugin overview:
