@@ -15,7 +15,7 @@ class GoogleTTS < Plugin
   def init(init)
     super
     logger("INFO: INIT plugin #{self.class.name}.")
-    @@bot[:gtts] = self
+    @@bot[:google] = self
     return @@bot
   end
 
