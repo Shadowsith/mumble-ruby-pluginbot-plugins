@@ -98,29 +98,8 @@ Move:
 #### Limitations
 GoogleTTS allows only 200 characters
 
-### MaryTTS
-Text to speech functionality with help of open source mary text to speech engine
-
-#### Implemented languages
-* English
-* German
-
-#### Voice variants
-* male
-* female
-
-#### Installation
-* helpers/ttsh.rb to mumble-ruby-pluginbot/helpers
-* helpers/maryttsh.rb to mumble-ruby-pluginbot/helpers
-* plugins/marytts.rb to mumble-ruby-pluginbot/helpers
-* plugins/marytts.yml to mumble-ruby-pluginbot/helpers
-
-#### Limitations
-The MaryTTS plugins has a limitation to max 200 characters (max allowed chars in HTTP-Request) but it is planned to
-raise this up to 1000 characters
-
 ### Remove (in development)
 Deletes music files from file system<br>
 
-### Move (Coming soon)
+### Move (in development)
 Move/rename music files from one folder into onther<br>

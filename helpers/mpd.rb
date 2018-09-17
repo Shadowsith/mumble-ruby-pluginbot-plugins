@@ -29,31 +29,57 @@ module IMpd
       i = 0
       if where == "file"
         bot[:mpd].where(file: "#{search}").each do |song|
-          songs.push(song); break if i == count; i = i + 1
+          songs.push(song); i = i + 1; break if i == count
         end
       elsif where == "title"
         bot[:mpd].where(title: "#{search}").each do |song|
-          songs.push(song); break if i == count; i = i + 1
+          songs.push(song); i = i + 1; break if i == count
         end
       elsif where == "artist"
         bot[:mpd].where(artist: "#{search}").each do |song|
-          songs.push(song); break if i == count; i = i + 1
+          songs.push(song); i = i + 1; break if i == count
         end
       elsif where == "album"
         bot[:mpd].where(album: "#{search}").each do |song|
-          songs.push(song); break if i == count; i = i + 1
+          songs.push(song); i = i + 1; break if i == count
         end
       elsif where == "date"
         bot[:mpd].where(date: "#{search}").each do |song|
-          songs.push(song); break if i == count; i = i + 1
+          songs.push(song); i = i + 1; break if i == count
         end
       else
         bot[:mpd].where(any: "#{search}").each do |song|
-          songs.push(song); break if i == count; i = i + 1
+          songs.push(song); i = i + 1; break if i == count
         end
       end
     end
     return songs
+  end
+
+  def getFirstSong(bot, search, where = "")
+    song = nil
+    if search != ""
+      song = bot[:mpd].where(file: "#{search}").first if where == "file"
+      song = bot[:mpd].where(title: "#{search}").first if where == "title"
+      song = bot[:mpd].where(artist: "#{search}").first if where == "artist"
+      song = bot[:mpd].where(album: "#{search}").first if where == "album"
+      song = bot[:mpd].where(date: "#{search}").first if where == "date"
+      song = bot[:mpd].where(any: "#{search}").first if where == ""
+    end
+    return song
+  end
+
+  def getLastSong(bot, search, where = "")
+    song = nil
+    if search != ""
+      song = bot[:mpd].where(file: "#{search}").last if where == "file"
+      song = bot[:mpd].where(title: "#{search}").last if where == "title"
+      song = bot[:mpd].where(artist: "#{search}").last if where == "artist"
+      song = bot[:mpd].where(album: "#{search}").last if where == "album"
+      song = bot[:mpd].where(date: "#{search}").last if where == "date"
+      song = bot[:mpd].where(any: "#{search}").last if where == ""
+    end
+    return song
   end
 
   def update(bot)
@@ -111,7 +137,27 @@ module IMpd
     privatemessage(text_out)
   end
 
+  # add to queue and play directly
+  def addPlay(bot, search, where = "", count = 1)
+    if search == ""
+      text_out = I18n.t("plugin_mpd.add.empty")
+    else
+      songs = []
+      songs = getSongs(bot, search, where, 1)
+      if songs.nil?
+        text_out = I18n.t("plugin_mpd.add.nothing")
+      else
+        for song in songs
+          text_out << "add #{song.file}<br/>"
+          bot[:mpd].add(song)
+        end
+      end
+    end
+    privatemessage(text_out)
+  end
+
   # print output to user--------------------------------------------------------
+  # later goes back into plugin mpd if the plugins are merged
 
   def printFiles(bot, search)
     if search != ""

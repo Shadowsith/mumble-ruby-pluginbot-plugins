@@ -1,6 +1,7 @@
 # This plugin requires id3v2 console program to set meta tag informations from bot
 
 require "../helpers/id3v2.rb"
+require "../helpers/mpd.rb"
 
 class Metadata < Plugin
   include IMpd

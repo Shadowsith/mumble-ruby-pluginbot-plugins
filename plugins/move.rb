@@ -1,5 +1,3 @@
-require "../helpers/moveh.rb"
-
 class Move < Plugin
   def init(init)
     super
