@@ -1,0 +1,31 @@
+en:
+  plugin_metadata:
+
+    mlist: "List of all songs with meta tags including search pattern"
+
+    mtags:
+      title: "Title"
+      artist: "Artist"
+      album: "Album"
+      genre: "Genre"
+      date: "Date"
+      file: "File"
+      length: "Length"
+
+      fnferr: "No file found with pattern"
+    
+    help:
+      meta: "[pattern] [value] - add/change metadata offirst file with search pattern"
+      mall: " [pattern] [value] - add/change metadata \
+            for all files with same search pattern"
+      mdata: "[pattern] - show metadata from first audiofile with search pattern"
+      mlist: "[pattern] - list all files with same pattern"
+      mp3info: "command works only with mp3 files"
+
+    error:
+      parameter: "Wrong number of paramter!"
+      fnferr: "File not found!"
+ 
+
+ 
+ 

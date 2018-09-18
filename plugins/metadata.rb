@@ -6,99 +6,22 @@ require "../helpers/mpd.rb"
 class Metadata < Plugin
   include IMpd
 
-  private
-
-  def getTableRow(col1, col2)
-    row = "<tr>"
-    row += "<td style=\"color:lightseagreen;\"><b>#{col1}</b></td>"
-    row += "<td>#{col2}</td>"
-    row += "</tr>"
-    return row
-  end
-
-  def getListRow(val)
-    row = "<style=\"padding: 0 10px 0 10px\";><td>#{val}</td></style>"
-    return row
-  end
-
-  def getTableHeadCol(name)
-    col = "<td style=\"color:lightseagreen;\"><b>#{name}</b></td>"
-    return col
-  end
-
-  @@tab = "&#160;&#160;&#160;"
-
-  @@id3 = ID3v2.new
-
-  def getSongs(search)
-    songs = []
-    for song in @@bot[:mpd].songs
-      if song.title.to_s.downcase.include? search.to_s.downcase
-        songs.push(song); next
-      end
-      if song.artist.to_s.downcase.include? search.to_s.downcase
-        songs.push(song); next
-      end
-      if song.album.to_s.downcase.include? search.to_s.downcase
-        songs.push(song); next
-      end
-      if song.genre.to_s.downcase.include? search.to_s.downcase
-        songs.push(song); next
-      end
-      if song.file.to_s.downcase.include? search.to_s.downcase
-        songs.push(song)
-      end
-    end
-    return songs
-  end
-
-  def getSong(search)
-    song = @@bot[:mpd].songs.select { |s|
-      s.title.to_s.downcase.include? search.to_s.downcase
-    }.first
-    if song.nil?
-      song = @@bot[:mpd].songs.select { |s|
-        s.artist.to_s.downcase.include? search.to_s.downcase
-      }.first
-    end
-    if song.nil?
-      song = @@bot[:mpd].songs.select { |s|
-        s.album.to_s.downcase.include? search.to_s.downcase
-      }.first
-    end
-    if song.nil?
-      song = @@bot[:mpd].songs.select { |s|
-        s.file.to_s.downcase.include? search.to_s.downcase
-      }.first
-    end
-    return song
-  end
-
-  def getTags(search)
-    song = getSong(search)
-    if !song.nil?
-      meta = "<table>"
-      meta += getTableRow("Title:", song.title) if !song.title.nil?
-      meta += getTableRow("Artist:", song.artist) if !song.artist.nil?
-      meta += getTableRow("Album:", song.album) if !song.album.nil?
-      meta += getTableRow("Genre:", song.genre) if !song.genre.nil?
-      meta += getTableRow("Date:", song.date) if !song.date.nil?
-      meta += getTableRow("File:", song.file) if !song.file.nil?
-      meta += getTableRow("Length:#{@@tab}", song.length) if !song.length.nil?
-      meta += "</table>"
-
-      privatemessage(meta)
-    else
-      privatemessage("No file with pattern #{file} found")
-    end
-  end
-
   public
 
   def init(init)
     super
     logger("INFO: INIT plugin #{self.class.name}.")
     @@bot[:meta] = self
+
+    # put translations into member variables to space in code
+    @title = I18n.t('plugin_metadata.mtags.title')
+    @artist = I18n.t('plugin_metadata.mtags.artist')
+    @album = I18n.t('plugin_metadata.mtags.album')
+    @genre = I18n.t('plugin_metadata.mtags.genre')
+    @date = I18n.t('plugin_metadata.mtags.date')
+    @file = I18n.t('plugin_metadata.mtags.file')
+    @length = I18n.t('plugin_metadata.mtags.length')
+
     return @@bot
   end
 
@@ -108,18 +31,16 @@ class Metadata < Plugin
 
   def help(h)
     h << "<hr><span style='color:red;'>Plugin #{self.class.name}</span><br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}meta [title|artist|album" \
-    "|genre|year] [pattern] [value] - add/change metadata of " \
-    "first file with search pattern<br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}metaall|mall [title| " \
-    "artist|album|genre|year] [pattern] [value] - add/change metadata " \
-    "for all files with same search pattern<br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}metadata|mdata [pattern] - " \
-    "show metadata from first audiofile with search pattern<br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}metalist|mlist [pattern] - " \
-    "list all files with same pattern<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}meta " \
+      "[title|artist|album|genre|year] #{I18n.t('plugin_metadata.help.meta')}<br>" 
+    h << "<b>#{Conf.gvalue("main:control:string")}metaall|mall " \
+      "[title|artist|album|genre|year] #{I18n.t('plugin_metadata.help.mall')}<br>" 
+    h << "<b>#{Conf.gvalue("main:control:string")}metadata|mdata " \
+      "#{I18n.t('plugin_metadata.help.mdata')}<br>" 
+    h << "<b>#{Conf.gvalue("main:control:string")}metalist|mlist " \
+      "#{I18n.t('plugin_metadata.help.mlist')}<br>" 
     h << "<b>Information:</b> #{Conf.gvalue("main:control:string")}meta " \
-    "command works only with mp3 files<br>"
+      "#{I18n.t('plugin_metadata.help.mp3info')}<br>" 
     h
   end
 
@@ -139,16 +60,16 @@ class Metadata < Plugin
       if parts[0] == "metalist" || parts[0] == "mlist"
         if !parts[1].nil?
           pattern = parts[1..parts.length - 1].join(" ").to_s
-          songs = getSongs(pattern)
+          songs = getSongs(@@bot, pattern)
           if !songs.nil?
-            text = "All songs with meta tags including search pattern #{pattern}<br>"
+            text = "#{I18n.t('plugin_metadata.mlist')} #{pattern}<br>"
             text += "<table cellspacing=\"5\">"
             text += "<tr>"
-            text += getTableHeadCol("File:")
-            text += getTableHeadCol("Title:")
-            text += getTableHeadCol("Artist:")
-            text += getTableHeadCol("Album:")
-            text += getTableHeadCol("Genre:")
+            text += getTableHeadCol("#{@file}:")
+            text += getTableHeadCol("#{@title}:")
+            text += getTableHeadCol("#{@artist}:")
+            text += getTableHeadCol("#{@album}:")
+            text += getTableHeadCol("#{@genre}:")
             text += "</tr>"
             for song in songs
               text += "<tr>"
@@ -198,7 +119,7 @@ class Metadata < Plugin
         search = parts[2].to_s
         val = parts[3..parts.length - 1].join(" ").to_s
         if !tag.empty? && !file.empty? && !val.empty?
-          songs = getSongs(search)
+          songs = getSongs(@@bot, search)
           if !songs.nil?
             for song in songs
               text = @@id3.setTitle(song.file, val) if tag == "title"
@@ -208,7 +129,7 @@ class Metadata < Plugin
               text = @@id3.setYear(song.file, val) if tag == "year"
             end
           else
-            text = "No file found"
+            text = "file not found"
           end
           privatemessage(text)
           updateBot(@@bot)
@@ -218,6 +139,49 @@ class Metadata < Plugin
       end
     rescue Exception => ex
       privatemessage("Metadata Error: #{ex.message}")
+    end
+  end
+
+  private
+
+  def getTableRow(col1, col2)
+    row = "<tr>"
+    row += "<td style=\"color:lightseagreen;\"><b>#{col1}</b></td>"
+    row += "<td>#{col2}</td>"
+    row += "</tr>"
+    return row
+  end
+
+  def getListRow(val)
+    row = "<style=\"padding: 0 10px 0 10px\";><td>#{val}</td></style>"
+    return row
+  end
+
+  def getTableHeadCol(name)
+    col = "<td style=\"color:lightseagreen;\"><b>#{name}</b></td>"
+    return col
+  end
+
+  @@tab = "&#160;&#160;&#160;"
+
+  @@id3 = ID3v2.new
+
+  def getTags(search)
+    song = getFirstSong(@@bot, search)
+    if !song.nil?
+      meta = "<table>"
+      meta += getTableRow("#{@title}:", song.title) if !song.title.nil?
+      meta += getTableRow("#{@artist}:", song.artist) if !song.artist.nil?
+      meta += getTableRow("#{@album}:", song.album) if !song.album.nil?
+      meta += getTableRow("#{@genre}:", song.genre) if !song.genre.nil?
+      meta += getTableRow("#{@date}:", song.date) if !song.date.nil?
+      meta += getTableRow("#{@file}:", song.file) if !song.file.nil?
+      meta += getTableRow("#{@length}: #{@@tab}", song.length) if !song.length.nil?
+      meta += "</table>"
+
+      privatemessage(meta)
+    else
+      privatemessage("#{I18n.t('plugin_metadata.mtags.fnferr')}: #{file}")
     end
   end
 end
