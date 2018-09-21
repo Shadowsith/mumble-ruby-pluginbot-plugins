@@ -12,8 +12,6 @@ en:
       file: "File"
       length: "Length"
 
-      fnferr: "No file found with pattern"
-    
     help:
       meta: "[pattern] [value] - add/change metadata offirst file with search pattern"
       mall: " [pattern] [value] - add/change metadata \
@@ -23,8 +21,9 @@ en:
       mp3info: "command works only with mp3 files"
 
     error:
-      parameter: "Wrong number of paramter!"
-      fnferr: "File not found!"
+      arguments: "Wrong number of arguments!"
+      fnf: "File not found!"
+      fnfpattern: "No file found with pattern"
  
 
  

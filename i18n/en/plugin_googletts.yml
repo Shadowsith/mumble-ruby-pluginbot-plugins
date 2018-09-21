@@ -1,0 +1,9 @@
+en:
+  plugin_googletts:
+
+    gconf: "Current language"
+    
+    help:
+      gsay: "[message] - bot speaks from google translator engine"
+      glang: "[language] - set language of the bot"
+      gconf: "show settings"

@@ -10,12 +10,19 @@ class GoogleTTS < Plugin
 
   CONFIG = "../plugins/googletts.yml"
 
+  def addTranslation
+    @help_gsay = I18n.t("plugin_googletts.help.gsay")
+    @help_glang = I18n.t("plugin_googletts.help.glang")
+    @help_gconf = I18n.t("plugin_googletts.help.gconf")
+  end
+
   public
 
   def init(init)
     super
     logger("INFO: INIT plugin #{self.class.name}.")
     @@bot[:google] = self
+    addTranslation()
     return @@bot
   end
 
@@ -25,9 +32,9 @@ class GoogleTTS < Plugin
 
   def help(h)
     h << "<hr><span style='color:red;'>Plugin #{self.class.name}</span><br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}gsay [message]</b> - bot speaks from google translator engine<br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}glang [language]</b> - set language of the bot<br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}gconf</b> - get settings<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}gsay</b> #{@help_gsay}<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}glang</b> #{@help_glang}<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}gconf</b> - #{@help_gconf}<br>"
     h
   end
 
@@ -55,10 +62,10 @@ class GoogleTTS < Plugin
         end
       end
       if parts[0] == "gconf"
-        messageto(msg.actor, "<br>Current language: " + getLang + "<br>")
+        privatemessage("<br>#{I18n.t("plugin_googletts.gconf")}: #{getLang}<br>")
       end
     rescue Exception => ex
-      privatemessage("GoogleTTS Error: " + ex.message)
+      privatemessage("GoogleTTS #{I18n.t("global.error")}: " + ex.message)
     end
   end
 

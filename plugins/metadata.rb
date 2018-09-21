@@ -31,15 +31,15 @@ class Metadata < Plugin
 
   def help(h)
     h << "<hr><span style='color:red;'>Plugin #{self.class.name}</span><br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}meta " \
+    h << "<b>#{Conf.gvalue("main:control:string")}meta</b> " \
       "[title|artist|album|genre|year] #{I18n.t('plugin_metadata.help.meta')}<br>" 
-    h << "<b>#{Conf.gvalue("main:control:string")}metaall|mall " \
+    h << "<b>#{Conf.gvalue("main:control:string")}metaall|mall</b> " \
       "[title|artist|album|genre|year] #{I18n.t('plugin_metadata.help.mall')}<br>" 
-    h << "<b>#{Conf.gvalue("main:control:string")}metadata|mdata " \
+    h << "<b>#{Conf.gvalue("main:control:string")}metadata|mdata</b>" \
       "#{I18n.t('plugin_metadata.help.mdata')}<br>" 
-    h << "<b>#{Conf.gvalue("main:control:string")}metalist|mlist " \
+    h << "<b>#{Conf.gvalue("main:control:string")}metalist|mlist</b> " \
       "#{I18n.t('plugin_metadata.help.mlist')}<br>" 
-    h << "<b>Information:</b> #{Conf.gvalue("main:control:string")}meta " \
+    h << "<b>Information:</b> #{Conf.gvalue("main:control:string")}meta</b> " \
       "#{I18n.t('plugin_metadata.help.mp3info')}<br>" 
     h
   end
@@ -83,11 +83,11 @@ class Metadata < Plugin
             text += "</table>"
             privatemessage(text)
           else
-            privatemessage("No file with pattern #{parts[1]} found")
+            privatemessage("#{I18n.t('plugin_metadata.error.fnfpattern')} #{parts[1]}")
           end
         else
           privatemessage("Usage: #{Conf.gvalue("main:control:string")}" \
-          "metalist [pattern] - list all files with same pattern")
+          "metalist #{I18n.t('plugin_metadata.help.mlist')}")
         end
       end
       if parts[0] == "meta"
@@ -134,11 +134,11 @@ class Metadata < Plugin
           privatemessage(text)
           updateBot(@@bot)
         else
-          privatemessage("Wrong number of parameters!")
+          privatemessage("#{I18n.t('plugin_metadata.error.arguments')}")
         end
       end
     rescue Exception => ex
-      privatemessage("Metadata Error: #{ex.message}")
+      privatemessage("Metadata #{I18n.t('global.error')}: #{ex.message}")
     end
   end
 
@@ -181,7 +181,7 @@ class Metadata < Plugin
 
       privatemessage(meta)
     else
-      privatemessage("#{I18n.t('plugin_metadata.mtags.fnferr')}: #{file}")
+      privatemessage("#{I18n.t('plugin_metadata.error.fnf')}: #{file}")
     end
   end
 end
