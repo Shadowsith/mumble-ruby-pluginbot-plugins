@@ -1,0 +1,8 @@
+en:
+  plugin_delete:
+
+    help: "[file] - delete file from bot music folder"
+
+    file: "File"
+
+    removed_by: "was removed by"  

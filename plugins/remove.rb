@@ -19,8 +19,8 @@ class Remove < Plugin
 
   def help(h)
     h << "<hr><span style='color:red;'>Plugin #{self.class.name}</span><br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}remove [file] - delete " \
-    "file from bot music folder<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}remove" \
+    "#{I18n.t('plugin_delete.help')}<br>"
     h
   end
 
@@ -39,7 +39,7 @@ class Remove < Plugin
         end
       end
     rescue Exception => ex
-      privatemessage("Remove Error: #{ex.message}")
+      privatemessage("Remove #{I18n.t('global.error')}: #{ex.message}")
     end
   end
 
@@ -47,6 +47,7 @@ class Remove < Plugin
 
   def delete(file, actor)
     system("#{@rm} ~/music/\"#{file}\"")
-    channelmessage("File #{file} was removed by #{actor}")
+    message(actor, "#{I18n.t('plugin_delete.file')} #{file}" \
+    "#{I18n.t('plugin_delete.removed_by')} #{actor}")
   end
 end

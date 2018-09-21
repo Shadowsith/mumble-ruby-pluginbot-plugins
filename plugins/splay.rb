@@ -12,8 +12,8 @@ class SearchPlay < Plugin
 
   def help(h)
     h << "<hr><span style='color:red;'>Plugin #{self.class.name}</span><br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}splay [file]</b> - add first match to playlist and plays it<br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}spl</b> - alias for splay<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}splay|spl</b>" \
+    "#{I18n.t('plugin_splay.help')}<br>"
     h
   end
 
