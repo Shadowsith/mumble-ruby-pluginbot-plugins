@@ -1,0 +1,5 @@
+en:
+  plugin_system:
+      
+    help: "information about operating system and mumble-server"
+    info: "System information"

@@ -1,2 +1,8 @@
 en:
   plugin_picotts:
+
+
+    help:
+      msg: "[message] bot speaks from pico2wave engine"
+      lang: "[language] set language of the bot"
+      conf: "show settings"

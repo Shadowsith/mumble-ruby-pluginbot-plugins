@@ -15,16 +15,26 @@ class System < Plugin
 
   def help(h)
     h << "<hr><span style='color:red;'>Plugin #{self.class.name}</span><br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}sysinfo</b> - information about operating system and mumble-server<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}sysinfo</b> - " \
+    "#{I18n.t("plugin_system.help")}<br>"
     h
   end
 
   def handle_chat(msg, message)
     super
     if message == "sysinfo"
-      head = "<br><span style='color:lightblue;'>System information:</span><br>"
-      os = %x( uname -smr ) + "<br>"
-      privatemessage(head + os)
+      begin
+        head = "<br><span style='color:lightblue;'><b>" \
+        "#{I18n.t("plugin_system.info")}:</b></span><br>"
+        os = %x( uname -smr ) + "<br>"
+        system("murmurd -version > /tmp/murmurd.txt 2>&1")
+        mumble = File.open("/tmp/murmurd.txt", &:readline)
+        mumble = mumble[mumble.to_s.index("--") + 3..mumble.to_s.length]
+        mumble = "Mumble-Server Version: #{mumble}<br>"
+        privatemessage(head + os + mumble)
+      rescue Exception => ex
+        privatemessage("Sysinfo #{I18n.t("global.error")}: #{ex.message}")
+      end
     end
   end
 end

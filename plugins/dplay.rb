@@ -1,8 +1,8 @@
-class SearchPlay < Plugin
+class DirectPlay < Plugin
   def init(init)
     super
     logger("INFO: INIT plugin #{self.class.name}.")
-    @@bot[:bot] = self
+    @@bot[:dplay] = self
     return @@bot
   end
 
@@ -12,15 +12,15 @@ class SearchPlay < Plugin
 
   def help(h)
     h << "<hr><span style='color:red;'>Plugin #{self.class.name}</span><br>"
-    h << "<b>#{Conf.gvalue("main:control:string")}splay|spl</b>" \
-    "#{I18n.t('plugin_splay.help')}<br>"
+    h << "<b>#{Conf.gvalue("main:control:string")}dplay|dpl</b> - " \
+    "#{I18n.t("plugin_dplay.help")}<br>"
     h
   end
 
   def handle_chat(msg, message)
     super
     parts = message.split(" ")
-    if parts[0] == "splay" || parts[0] == "spl"
+    if parts[0] == "dplay" || parts[0] == "dpl"
       if !parts[1].to_s.empty?
         text_out = "#{I18n.t("plugin_mpd.add.added")}<br/>"
         count = 0
