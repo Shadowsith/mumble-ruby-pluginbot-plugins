@@ -1,7 +1,7 @@
 require "../helpers/mpd.rb"
 require "../helpers/ffmpeg.rb"
 
-class AudioCut < Plugin
+class AudioEdit < Plugin
   include IMpd
 
   def init(init)
@@ -27,13 +27,20 @@ class AudioCut < Plugin
     parts = message.split(" ")
     if parts[0] == "audiocut" || parts[0] == "acut"
       if parts[1] == "head"
-
+        if !parts[2].to_s.nil? && !parts[3].to_s.nil?
+          song = getFirstSong(@@bot, parts[2], "file")
+          cutter = FFmpeg.new(song)
+          cutter.cutHead(parts[3].to_i)
+        end
       end
       if parts[1] == "tail"
-
+        if !parts[2].to_s.nil? && !parts[3].to_s.nil? 
+          song = getFirstSong(@@bot, part[2], "file") 
+          cutter = FFmpeg.new(song)
+          cutter.cutTail(parts[3].to_i)
+          
+        end
       end
-       
     end
   end
-
 end
