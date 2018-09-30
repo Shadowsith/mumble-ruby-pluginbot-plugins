@@ -1,0 +1,17 @@
+en:
+  plugin_audioedit:
+
+    help:
+      acut: "[head|tail] [time] [file] cuts time from begin or end of the file"
+      acut_center: "[center] [start_time] [duration] [file] cuts out part of \ 
+      a file from start time + duration"
+
+    acut:
+      success: " was cutted successfully"
+
+    err:
+      arg: "No argument found with name:"
+      flen: "The file is shorter as the cutting length!"
+      fnf: "The file does not exist"
+      ftype: "File has a not supported audio type"
+

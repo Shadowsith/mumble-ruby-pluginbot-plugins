@@ -95,10 +95,11 @@ class Metadata < Plugin
         file = parts[2].to_s
         val = parts[3..parts.length - 1].join(" ").to_s
         if !tag.empty? && !file.empty? && !val.empty?
-          song = @@bot[:mpd].songs.select {
-            |s|
-            s.file.to_s.downcase.include? file.downcase
-          }.first
+          # song = @@bot[:mpd].songs.select {
+          #   |s|
+          #   s.file.to_s.downcase.include? file.downcase
+          # }.first
+          song = getFirstSong(@@bot, file, "file") 
           if !song.nil?
             text = @@id3.setTitle(song.file, val) if tag == "title"
             text = @@id3.setArtist(song.file, val) if tag == "artist"
@@ -109,7 +110,7 @@ class Metadata < Plugin
             text = "No file found"
           end
           privatemessage(text)
-          updateBot(@@bot)
+          update(@@bot)
         else
           privatemessage("Wrong number of parameters!")
         end
